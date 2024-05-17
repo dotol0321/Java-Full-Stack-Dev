@@ -1,0 +1,244 @@
+2024.05.17
+
+# github
+.md : mark up
+.jar : java파일을 하나로 만들어 놓은 파일
+
+# github html 파일 세팅
+setting > Default branch 체크 하면 html 화면 처럼 구성할 수 있음
+
+# 유튜브 채널 : 생활코딩 (지옥에서 온 git) 참고
+
+# Docker
+- 운영체제 별로 가상화를 사용가능하게 하는 것도 있고, 아닌 것도 있음(확인 필요)
+- docker 사용(실행)을 위해 가상화가 사용 가능해야함
+- 확인 방법 : 작업관리자 > CPU > 가상화 : '사용' 표시 되어 있어야함
+- docker를 사용자 컴퓨터에 반드시 설치해야 함 (도커 계정으로 도커허브 계정도 연동)
+
+# git과 docker의 차이
+- 도커는 개발 환경을 올리는 곳
+- 깃허브는 개발 코드를 올리는 곳
+
+# vscode에서 자바 파일 실행 테스트 하는 방법
+1. run
+2. terminal에 이미지대로 입력
+사진 설명을 입력하세요.
+- 자바 클래스 만든 후 실행 : dir > javac Test.java > java Test
+- 자바 버전 확인 : java -version
+
+# 이클립스 강사님 프로젝트 update(import) 방법
+- 업데이트 할 프로젝트 > 오른쪽 버튼 > team > pull
+
+# 비교연산자
+>, <, >=, <=, ==, !=
+
+# 삼항연산자
+조건 ? 참 : 거짓
+int x = 3;
+int y = 5;
+int max = (x > y) ? x : y;
+System.out.println(max); // 5 출력
+
+# 문자열 비교
+- 메모리에 적재된 문자열(new String("Java"))은 주소값을 비교하는 것이기 때문에 정수처럼 ==으로 비교하면 서로 다른 (주소)값으로 인식하기 때문에, eqauls을 이용하여 그 안에 담긴 문자열을 비교할 수 있음.
+String s1 = "Java";
+String s2 = "Java";
+System.out.println(s1 == s2); 	// true
+		
+String s3 = new String("Java");
+String s4 = new String("Java");
+System.out.println(s3 == s4);	// false
+System.out.println(s3.equals(s4));	// true
+
+중요포인트!
+package java0517;
+
+/*********************************
+ * >> 조건문 
+ * if 		: if(조건식) {}
+ * else	if	: if(조건식) {} else if(조건식) {}
+ * else		: if(조건식) {} else {}
+ *********************************/
+public class Study02 {
+
+	public static void main(String[] args) {
+		
+		/*
+		boolean 논리값 = true;
+		if(true) { // 조건식에 true를 넣으면 무조건 실행
+        	System.out.println("참");
+        	논리값 = false; 
+        }
+		 		 
+		if(논리값) {
+        	System.out.println("논리값이 참이다.");
+        }
+		*/
+		
+		/*
+		if(!논리값) { // false가 되어 실행X
+        	System.out.println("부정의 논리값"); 
+        }
+		 
+		int a, b;
+		a = 5; //5
+        b = ++a; //6
+        System.out.println(a + ":" + b); // 6:6
+		  
+		if(a == b) {
+        	System.out.println("a와 b는 같다."); 
+        }else {
+			System.out.println("a와 b는 다르다."); 
+        }
+		*/
+		
+		/*
+		boolean 논리값 = true;
+		if(!논리값) { // 거짓(조건식을 변환시킨다해서 값이 바뀌는 것이 아님 => 아래 식에 영향X)
+			논리값 = !논리값;			
+		}else if(논리값) { // 참
+			System.out.println("참이다.");
+		}
+		*/
+		
+		/*
+		if(논리값) {			// 거짓
+			논리값 = !논리값;
+		}
+		System.out.println(논리값);
+		if(논리값) {	// 참
+			System.out.println("참이다.");
+		}
+		*/
+		
+		// 중요 포인트!
+		/*
+		int a, b;
+		a = 10;
+		b = 14;
+		
+		if(!(a < b)) {
+			System.out.println("B 크다.");
+		} else if(!(a > b)) {
+			System.out.println("A가 크다.");
+		}
+		*/
+		
+		int a = 5;
+		int b = 3;
+		int c = 5;
+		
+		if(a>b) {
+			System.out.println("참");
+		}else {
+			System.out.println("거짓");
+		}
+		
+		if(a>=b) {
+			System.out.println("참");
+		}else {
+			System.out.println("거짓");
+		}
+		
+		if(a<b) {
+			System.out.println("참");
+		}else {
+			System.out.println("거짓");
+		}
+		
+		if(a<=b) {
+			System.out.println("참");
+		}else {
+			System.out.println("거짓");
+		}
+		
+		if(a==c) {
+			System.out.println("참");
+		}else {
+			System.out.println("거짓");
+		}
+		
+		if(a!=b) {
+			System.out.println("참");
+		}else {
+			System.out.println("거짓");
+		}
+	}
+
+}
+
+# Switch Case
+- 연산식 또는 논리형 값이 들어간 변수가 들어감
+- default뒤에 break 가 없는 이유는 맨 아래쪽에는 실행될 코드가 없기 때문
+- 고정된 기능을 수행하는데 쓰여짐
+- 범위를 지정하여 쓰는 곳에 유용함
+package java0517;
+
+import java.util.Scanner;
+
+public class Study03 {
+	public static void main(String[] args) {		
+		Scanner a = new Scanner(System.in);
+		//System.out.println(a.nextInt());
+		
+		switch (a.nextInt()) {		
+		case 1:
+			System.out.println("값이 1입니다.");
+			break;
+		default:
+			System.out.println("값이 1이 아닙니다.");
+		}
+		
+		
+		switch (a) {
+		case 1:
+			System.out.println("값이 1입니다.");
+			break;
+		default:
+			System.out.println("값이 1이 아닙니다.");
+		}
+	}
+}
+
+package java0517;
+
+import java.util.Scanner;
+
+public class Study03 {
+	public static void main(String[] args) {		
+		Scanner a = new Scanner(System.in);
+		//System.out.println(a.nextInt());
+		
+		switch (a.nextInt()) {		
+		case 1:
+			System.out.println("값이 1입니다.");
+			break;
+		default:
+			System.out.println("값이 1이 아닙니다.");
+		}
+		
+		/*
+		switch (a.next()) {		
+		case "A":
+			System.out.println("값이 A입니다.");
+			break;
+		case "B":
+			System.out.println("값이 B입니다.");
+			break;
+		default:
+			System.out.println("값이 A와 B 모두 아닙니다.");
+		}
+		*/
+		
+		/*
+		switch (a.nextLine()) {		
+		case "김보경":
+			System.out.println("값이 김보경입니다.");
+			break;
+		default:
+			System.out.println("값이 김보경이 아닙니다.");
+		}
+		*/	
+	}
+}
+
