@@ -1,0 +1,67 @@
+package java0523;
+
+import java.util.Scanner;
+
+/*********************************
+ * >> Console 입력 알아보기
+ * Scanner 클래스와 반복문를 이용하여 계산기 만들기
+ *********************************/
+
+// https://itbeginner2020.tistory.com/23
+
+public class Study05 {
+
+	public static void main(String[] args) {
+
+		/** 객체 생성 **/
+		Scanner sc = new Scanner(System.in);
+		
+		/** 객체 사용 **/
+		String 더하기 = "+";
+		String 빼기  = "-";
+		String 나누기 = "/";
+		String 곱하기 = "*";
+		
+		// 문제발생
+		// 사용자는 콘솔창에 숫자입력 후 "enter"를 누르는데, 이때 개행문자가 scan.nextLine()의 입력으로 처리되기 때문에 기호를 입력받을 수 없게된다.
+		// 해결
+		// 1. String b = sc.nextLine();의 문자형식을 받기 때문에 switch case문에서 case별 문자처리("") 해준다.
+		// 2. 문자를 입력받는 sc.nextLine();를 위에 한번 더 사용하여 enter를 눌러 생긴 개행문자를 먼저 처리해줌으로써 해결할 수 있다.
+		
+		while(true) {
+			System.out.println("첫번째 숫자를 입력하세요.");
+			int a = sc.nextInt();
+			
+			sc.nextLine(); // 추가
+			String b = sc.nextLine();
+			
+			System.out.println("두번째 숫자를 입력하세요.");
+			int c = sc.nextInt();
+			
+			String d = "";
+			switch (b) {
+				case "1": // 문자처리 추가
+					d = a + 더하기 + c + "=" + (a + c);
+					break;
+				case "2": // 문자처리 추가
+					d = a + 빼기 + c + "=" + (a - c);
+					break;
+				case "3": // 문자처리 추가
+					d = a + 나누기 + c + "=" + (a / c);
+					break;
+				case "4": // 문자처리 추가
+					d = a + 곱하기 + c + "=" + (a * c);
+					break;
+				default:
+			}
+			
+			System.out.println(d);
+			
+		}
+		
+		/** 객체 제거 **/
+		//sc.close();
+		
+	}
+
+}
