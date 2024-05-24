@@ -1,3 +1,172 @@
+2024.05.24
+
+★ 20240524_7일차 (5/31 객체(애플리케이션 만들기 : 메소드/클래스/데이터베이스)를 다루는 코딩시험 예정)
+
+// 주석처리
+// ctrl + shift + c
+
+# 객체지향프로그램 (OOP : Object Oriented Programming)
+- 대표적으로 Java언어
+- Java언어의 제일 상위 object 는 Object
+
+# 언어의 파생
+- C(절차지향) > C++ > java(객체지향)
+
+# 메소드
+public static void main(String[] args){
+
+}
+- 전달값 = 매개변수 = 인자값
+- 입력 : 호출 영역
+- 반환형 = 리턴값 (void = return값 없음) : 기본자료형/참조자료형
+ㄴ 반환형과 리턴값은 동일한 자료형이 들어가야함
+
+- 메인메소드에 public이 필수인 이유는 JVM에서 접근하는데 제한을 두면 안되기 때문
+- static이 붙으면 메모리에 바로 할당되어 실행됨
+- for문을 사용하지 않고 재귀함수로 메소드를 만들어서 사용가능
+
+# 접근제한자
+- public : 공용
+- protected
+- defualt : 접근제한자를 쓰지 않았을 때 기본으로 사용됨
+- private : 한 class 안에서만 사용
+
+# 오버로딩
+- 메소드명은 같고, 전달값만 다른 메소드
+=> 같은 메소드명의 전달값도 한개인 메소드를 2개 만들려면 다른 하나의 메소드는 자료형을 바꾸면 됨
+
+# 전역변수 / 지역변수
+- 전역변수 : 클래스 내에서 사용
+// 전역변수(인스턴스 변수) : 클래스 내에 메소드에서 모두 사용 가능
+// static 메소드로 구성된 경우에는 인스턴스 변수도 static으로 구성되어야 함!!
+- 지역변수 : 메소드 내에서 사용
+
+package java0524;
+
+public class Study01 {
+	/***************** 기본적인 메소드 사용법 **************/
+	public static void main(String[] args) {
+		// 메소드 호출 영역 = 입력 영역
+		int 값1 = 합(1, 2); // 3
+		System.out.println(값1);
+		
+		int 값2 = 빼기(1, 2); // -1
+		System.out.println(값2);
+		
+		int 값3 = 나누기(1, 2); // 0
+		System.out.println(값3);
+		
+		int 값4 = 곱(1, 2); // 2
+		System.out.println(값4);
+	}
+	
+	// static 이 붙어야 메모리에 할당됨
+	private static int 합(int a, int b) {
+		return (a + b); // 반환점 : 메소드 출력 영역
+	}
+	
+	static int 빼기(int a, int b) {
+		return (a - b);
+	}
+	
+	static int 나누기(int a, int b) {
+		return (a / b);
+	}
+	
+	static int 곱(int a, int b) {
+		return (a * b);
+	}
+	
+}
+
+package java0524;
+
+public class Study02 {
+	
+	// 전역변수(인스턴스 변수) : 클래스 내에 메소드에서 모두 사용 가능
+	// static 메소드로 구성된 경우에는 인스턴스 변수도 static으로 구성되어야 함!!
+	static int b = 0;
+	
+	public static void main(String[] args) {
+		
+		a();
+		
+	}
+	
+	static void a() {
+		// 메소드를 이용한 재귀 반복문 = 재귀함수
+		// (overflow 오류 : 자바가 실행되다가 멈춤)
+		
+		if(b < 5) {
+			System.out.println("안녕!" + b);
+			b++;
+			a();
+		}
+		
+	}
+}
+
+package java0524;
+
+public class Study03 {
+	
+	// 메소드 오버로딩 : 매개변수 자리의 자료형이 다르거나, 매개변수의 갯수가 다르면 됨
+	public static void main(String[] args) {		
+		a();
+		a(1);
+		a("");		
+	}
+	
+	static void a() {		
+
+	}
+	
+	static void a(int a) {
+			
+	}
+	
+	static void a(String a) {
+		
+	}
+	
+}
+
+package java0524;
+
+public class Study04 {
+	
+	static int a = 0; // 전역변수
+	static int c = 0; // 전역변수
+	
+	public static void main(String[] args) {
+		
+		System.out.println(a);
+		int c = b();
+		System.out.println(c);
+		
+	}
+	
+/*
+	static void b() {
+		int c = 5; // 지역변수
+		this.c = c; // static이 붙은 대상에게는 this를 붙일 수 없다. => void를 반환형으로 변경필요
+		System.out.println(a);
+		return c; // 
+	}
+	// static이 붙은 반환형 없는 메소드에는 반환형이 있는 return 처리를 하여
+	// 다른 메소드에서 가져다 사용 가능하게 할 수 있다.
+*/
+
+	static int b() {
+		int c = 5; // 지역변수
+		System.out.println(a);
+		return c; 
+	}
+
+}
+
+
+# 객체
 package java0524;
 /***************** 클래스 **************/
 // 다른 곳에서도 가져다 사용할 수 있어야 하기 때문에 class는 기본적으로 public이 붙음
@@ -6,24 +175,21 @@ package java0524;
 public class Study05 {
 	public static void main(String[] args) {
 		
-//		new Study05_1(); // <-- 생성자 실행 또는 호출 / new: 객체 생성
-		Study05_1 s51 = new Study05_1(1); // 참조자료형의 객체 생성
+//		new Study05_1(); // <-- 생성자 실행 또는 호출
+		Study05_1 s51 = new Study05_1(1); // 참조자료형의 객체 생성 / new: 객체 생성
 		System.out.println(s51); // 참조자료형이기 때문에 주소값 출력
 		s51.b();
 //		s51 a; // 접근제어자 때문에 접근할 수 없음
 				
-	}
-	
+	}	
 }
-
-------------------------------------------------------------------------------------------------------------------------
 package java0524;
 
 public class Study05_1 {	
-// 기본 생성자 (반환값이 없기 때문에 생성자라는 것을 구분할 수 있다)
+// 기본 생성자 (반환 값이 없기 때문에 생성자라는 것을 구분할 수 있다)
 // 클래스를 만들면 화면에 코드가 없어도 생성자는 기본적으로 있다고 생각하면 됨
 // ㄴ 하지만 매개변수를 채운 생성자를 만들면, 기본생성자는 무시되기 때문에
-// 기본생성자를 사용하려면 강제적으로 코드를 넣어주면 됨
+// 기본생성자를 사용하려면 강제적으로 기본 생성자를 만드는 코드를 넣어주면 됨
 	
 	private int a;
 	
@@ -41,3 +207,234 @@ public class Study05_1 {
 	}
 	
 }
+
+
+# maria DB
+https://mariadb.com/kb/en/postdownload/mariadb-server-11-3-2/
+- 설치할 때 체크박스 체크
+
+# heidSQL
+https://www.heidisql.com/download.php#google_vignette
+
+사진 설명을 입력하세요.
+연결 해제 버튼 클릭 > 다시 접속 창 나오면 비번 입력 후 edu 디비 접속
+
+package java0524;
+
+public class Study06 {
+
+	public static void main(String[] args) {
+		
+		new Study06_1().함수();
+//		new Study06_2().함수();
+		// new 키워드 없이 객체에 바로 접근하여 함수 사용
+		// ㄴ함수가 static 선언으로 메모리에 할당되어 있는 상태여야 함
+		Study06_2.함수();		 
+		System.out.println(Study06_2.a);
+		
+	}
+	
+}
+
+package java0524;
+
+public class Study06_1 {
+
+	void 함수() {
+		
+	}
+	
+}
+
+package java0524;
+
+public class Study06_2 {
+	// static 을 사용하여 메모리에 할당
+	// static 은 필요에 의해서만 사용!
+	static int a = 10;
+	static void 함수() {
+		
+	}
+	
+}
+
+# 객체에 있는 함수나 변수 사용
+1. new 키워드를 이용하여 객체(클래스)를 생성하여 사용
+2. static으로 함수나 변수를 선언하여 객체에 바로 접근하여 사용 ( ex. Study07.함수(); )
+
+# 중복정의 (Overload)
+- 같은 이름의 메서드를 매개변수를 달리하여 중복으로 정의하는 것
+
+# 상속 관계
+- 자식클래스 extends 부모클래스 (부모의 class를 자식 class에서 상속 받음)
+- 부모클래스에 있는 함수를 사용하기 위해선 자식클래스가 상속을 받아야한다.
+
+1. main메소드에 상속받아 사용하는 경우
+- main메소드에 static이 있기 때문에 부모클래스의 메서드에도 static이 붙어야함
+ㄴ 모든 클래스 내에 변수,함수에 static을 모두 붙여야하기 때문에 추천하지 않음
+ㄴ 메모리 과부하의 원인
+ㄴ 메인메소드가 없는 클래스의 메소드 안에 static이 없으면 함수나 변수를 사용할 때도 static 없어도 됨
+2. 메인 메소드가 없는 클래스 2개를 만들어서 부모-자식 상속관계를 만들어 사용하는 경우
+- 메인메소드에서 자식클래스를 객체로 생성하여 사용함.
+
+- extend : 클래스를 상속
+- implement : interface를 상속
+
+# 추상화 (@Override)
+- 부모클래스에서 메서드 이름만 정의한 것
+- 반드시 메서드 앞에 abstact가 붙어서 추상의 개념을 명시해야 함
+- 자식클래스에서 부모클래스를 상속 받아 추상적인 메서드를 override(재정의)하여 사용함
+- 클래스/메소드를 각각 추상화하여 사용할 수 있음
+package java0524;
+// 상속관계 : 자식 extends 부모 (부모의 class를 자식 class에서 상속 받음)
+
+public class Study07 {
+
+	public static void main(String[] args) {
+		// main메소드에 static이 있기 때문에 부모클래스의 함수에도 static이 붙어야함
+		// ㄴ 모든 클래스 내에 변수,함수에 static을 모두 붙여야하기 때문에 추천하지 않음
+		// ㄴ 메모리 과부하의 원인
+		// 함수();
+		// 메인메소드가 없는 클래스의 메소드 안에 static이 없으면 사용할 때도 static 없어도 됨
+		
+		Study07_2 a = new Study07_2();
+		
+		a.함수();
+		
+	}
+	
+}
+
+package java0524;
+//클래스에서 추상메소드를 쓰려면 클래스도 추상적이 되어야함
+public abstract class Study07_1 {
+
+	void 함수() { // private : 부모에서 제한을 걸어 자식들도 모두 사용X
+		System.out.println("함수");
+	}
+	
+	abstract void 함수2();
+	// 추상메소드 : 메서드 이름만 정의한 것
+	// 자식클래스에서 상속 받아 override(재정의)하여 사용함
+	
+	
+}
+
+package java0524;
+
+public class Study07_2 extends Study07_1 {
+	
+	void 호출() {
+		함수();
+	}
+	
+	 // 같은 이름의 메서드가 재구성 되었기 때문에 override의 개념이 됨
+	void 함수() {
+		System.out.println("함수111");
+	}
+	
+	// @Override: 부모의 추상적인 메소드를 재구성(재정의)하기 위함
+	@Override
+	void 함수2() {
+		
+	}
+	
+	// overload (같은 이름으로 메서드 중복 정의)
+	void 함수2(int a) { 
+		
+	}
+	
+}
+
+-
+package java0524;
+
+public class Study08 {
+	
+	public static void main(String[] args) {
+		
+		Study08_2 s8 = new Study08_2();
+		s8.함수();
+		s8.함수2();
+		
+	}
+}
+
+package java0524;
+
+public class Study08_1 {
+
+	Study08_1(){}
+	Study08_1(int a){this.a = a;}
+	// 자식 생성자에서 부모의 생성자를 제어함
+	// (숫자 4 매개변수를 넘겨줌) 
+	
+	int a;
+	void 함수() {System.out.println(a);}
+	
+}
+
+package java0524;
+
+public class Study08_2 extends Study08_1 {
+	
+	int a;
+	
+	Study08_2(){
+		super(4);
+		// 부모의 생성자는 자식의 생성자 영역에서 사용 가능
+		// 부모의 생성자를 제어하기 위함
+	};
+	
+	Study08_2(int a){
+		super.a = a; //super: 부모클래스의 것
+	}
+	
+	void 함수2() {
+//		super(); // 함수안에서는 생성자를 사용X
+//		System.out.println(a); // 자기자신
+//		System.out.println(super.a); // 부모
+	}
+		
+}
+
+# 간단한 프로그램 만들기
+- 구구단
+package java0524;
+// 구구단 실행  ====================================================
+public class Study09 {
+
+	public static void main(String[] args) {
+		
+//		new Study09_1().구구단(3, 6);	// 객체로 접근하여 메서드 실행		
+		new Study09_1(3, 6); // 생성자로 실행
+		
+	}	
+}
+
+package java0524;
+// 구구단 기능 구현
+public class Study09_1 {
+	
+	Study09_1(int a, int b) { // 생성자
+		단(a, b);
+	}
+	
+//	void 구구단(int a, int b) { // 메서드
+//		단(a, b);
+//	}
+	
+	private void 단(int a, int b) { // main 메서드에서 사용하기 때문에 static 있어야함
+		for(; a <= b; a++) {
+			System.out.println(a + "단");
+			계산(a);
+		}
+	}
+	
+	private void 계산(int a) {
+		for(int i=1; i<=9; i++) {
+			System.out.println(a + " x "+ i + " = " + (a*i));
+		}
+	}
+}
+
