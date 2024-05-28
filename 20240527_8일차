@@ -1,0 +1,205 @@
+2024.05.27 (월)
+
+# DB 질의문 (SQL문)
+- DDL : DB 공간 (create, alter, drop, truncate)
+- DML : DB 처리 (selet, insert, update, delete)
+- DCL : DB 사용자 권한 제어 (grant, revoke)
+- TCL : 트랜젝션 제어 (rollback, commit)
+
+# JDBC
+- 자바로 만든 데이터베이스 커넥션
+- 호스트(ip)
+
+# mariaDB
+- DB 저장소
+
+# 프로젝트 관리
+1. 모두 하나씩 다운받아서 사용하는 방법
+
+# maria DB
+사진 설명을 입력하세요.
+
+https://mariadb.com/downloads/connectors/connectors-data-access/java8-connector/
+> Connecotrs > 셀렉박스 아래와 같이 선택
+- product : java 8+
+- version : 3.4.0
+- OS : platform inde~
+> download
+> .jar 파일을 이크립스 프로젝트에 복붙
+> mariadb-java-client-3.4.0.jar 오른쪽 버튼 클릭 > build path > add to build path
+사진 설명을 입력하세요.
+reference libraries 에 등록된 화면
+
+
+2. 버전관리 프로그램 이용하는 방법 (버전이 서로 다를 수 있기 때문에 버전관리 프로그램이 필요한 것임)
+1) maven - spring framework
+사진 설명을 입력하세요.
+사진 설명을 입력하세요.
+jar : 자바 아카이브 파일
+사진 설명을 입력하세요.
+※※ artifact id가 프로젝트 이름으로 들어가게 됨 ※※
+src/main/java : java file 넣는 곳
+src/main/resource : 그 외 file 넣는 곳
+
+사진 설명을 입력하세요.
+사진 설명을 입력하세요.
+복사 후 이클립스 pom.xml에 넣기 > 저장
+사진 설명을 입력하세요.
+왼쪽에 maven dependencies에 mariadb-java-client-3.4.0.jar 추가 됨
+
+다운 받은 라이브러리가 존재하는 위치
+사진 설명을 입력하세요.
+C:\Users\hi\.m2\repository\org\mariadb\jdbc\mariadb-java-client\3.4.0
+
+
+2. gradle - spring boot
+사진 설명을 입력하세요.
+사진 설명을 입력하세요.
+사진 설명을 입력하세요.
+사진 설명을 입력하세요.
+사진 설명을 입력하세요.
+이클립스에서 자동으로 만들어진 gradle을 것을 지우고 직접 넣는 방법 사용하기
+
+사진 설명을 입력하세요.
+사진 설명을 입력하세요.
+java 환경변수(시스템변수), path 등록 하듯이 GRADLE_HOME으로 환경변수 등록 후 cmd에서 gradle 치고 설치 됐는지 확인
+사진 설명을 입력하세요.
+사진 설명을 입력하세요.
+(cmd 전체 캡쳐 참고)
+(집에서 할 경우 d드라이브에 프로젝트 있기 때문에 아래 코드로 진행)
+d:
+cd D:IDE\work
+dir
+mkdir JavaStudy3
+cd JavaStudy3
+gradle init
+1
+1
+enter 치기
+enter 치기
+1
+2
+1
+enter 치기
+
+이렇게 만들어지면 완료
+import > gradle > 프로젝트 경로넣고 finish
+app과 JavaStudy3 프로젝트가 생기는데, app프로젝트는 close project하기 (JavaStudy3안의 app과 겹치기 때문에)
+
+사진 설명을 입력하세요.
+빌드패스 안나오면 위와 같이 설정
+
+사진 설명을 입력하세요.
+사진 설명을 입력하세요.
+사진 설명을 입력하세요.
+사진 설명을 입력하세요.
+※ Driver.class 더블클릭 > org.mariadb.jdbc.Driver 복사 > 드라이버 변수에 넣기
+코딩 테스트 출제 예정!
+String 주소 = "jdbc:mariadb://localhost:3306/edu"; 
+DriverManager.getConnection(주소, 사용자, 비밀번호);
+package java0527;
+
+public class Study01 {
+
+	public static void main(String[] args) {		
+		// mariaDB 접속
+		new Study01_1().접속();		
+	}
+	
+}
+
+package java0527;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class Study01_1 {
+	
+	String 드라이버 = "org.mariadb.jdbc.Driver";
+	String 주소 = "jdbc:mariadb://localhost:3306/edu";
+	String 사용자 = "root";
+	String 비밀번호 = "1234";
+	
+	public void 접속() {
+		System.out.println("접속 시작!");
+		try { // 아래코드를 실행했을 때 (외부로 뭔가 하려고 시도 했기 때문에 예외처리 필요)
+			// 데이터베이스 접속 ===
+			Class.forName(드라이버);
+			Connection conn = DriverManager.getConnection(주소, 사용자, 비밀번호);
+			
+			String sql1 = "create OR REPLACE table test (no int, name varchar(50))"; 
+			PreparedStatement ps = conn.prepareStatement(sql1); // sql을 사용하게 준비하는 것
+			ps.execute(); // 실행
+			
+//			String sql2 = "insert into test value(1)"; // 컬럼이 하나이면 컬럼명 생략 가능함
+//			컬럼이 만들어진 순서대로 값을 넣어줘도 됨 => insert into test value(1, '하이')
+			String sql2 = "insert into test(name, no) value('하이', 1)"; 			
+			ps = conn.prepareStatement(sql2);
+			int result = ps.executeUpdate();
+			System.out.println(result); // 출력: 1 => 행 1개가 삽입됨을 의미 = 삽입 성공
+			
+			// sql = select문 실행해서 위의 insert된 데이터를 출력하시오.
+			String sql3 = "select * from test";
+			ps = conn.prepareStatement(sql3);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) { // next() : 다음줄이 있으면 데이터를 가져온다. (select는 여러줄을 가져올 수 있기 때문)
+				int no = rs.getInt("no");
+				String name = rs.getString("name");
+				TestDTO testDTO = new TestDTO();
+				testDTO.setNo(no);
+				testDTO.setName(name);
+				System.out.println(testDTO); // 출력 : java0527.TestDTO@29774679 => 주소값이 출력됨
+//				System.out.println(no + ", " + name);
+			}
+			
+			conn.close();
+			
+//			System.out.println("드라이버 클래스 존재합니다."); // 클래스 존재 여부 확인
+//			jdbc > 데이터베이스타입(oracle/mariadb) > 호스트(IP) > 포트 > 데이터베이스명
+//			jdbc :oracle:thin: @//[HOST][:PORT]/SERVICE
+//			System.out.println("섹션 생성 완료!");			
+		} catch (ClassNotFoundException e) { // 오류가 발생하면 처리하는 구문 
+			e.printStackTrace();
+		} catch (SQLException e) { //( 외부로 뭔가 하려고 시도 했기 때문에 예외처리 필요)
+			e.printStackTrace();
+		}
+	}
+	
+}
+
+DTO (Data Transfer Object, 데이터 전송 객체
+- 데이터를 자바에서 처리하는 바구니 (데이터를 담고 가져다쓰는 것)
+- setter( ) / getter( )
+- toString( )
+package java0527;
+// 데이터를 자바에서 처리하는 바구니
+public class TestDTO {
+	
+	private int no;
+	private String name;
+	
+	public int getNo() {
+		return no;
+	}
+	public void setNo(int no) {
+		this.no = no;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	@Override
+	public String toString() {
+		return "TestDTO [no=" + no + ", name=" + name + "]";
+	}
+	
+}
+
+- setter / getter 만들기
+ToString : 담아놓은 값을 문자열로 출력하기 위해 toString();을 사용함
