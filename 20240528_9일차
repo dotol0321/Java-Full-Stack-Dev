@@ -1,0 +1,685 @@
+2024.05.28 (화)
+
+# 강사님 프로젝트 파일 다운 안될 때
+프로젝트 > 오른쪽 클릭 > team > show in history
+history 탭에서 과거의 것 클릭 한 후 > reset > hard > team > pull
+
+# CRUD
+Create
+Read
+Update
+Delete
+
+# 객체지향
+- 반복적인 코드의 재사용
+
+# heidiSQL 을 실행하고 DB 작업 시작하기!!
+
+# DB
+데이터베이스(DataBase)
+사진 설명을 입력하세요.
+
+# JDBC를 이용한 데이터 CRUD
+
+<Main 클래스 / DTO 클래스 / Controller 클래스>
+코드 변화 history (1)
+package java0528;
+
+public class Study01 {
+	
+	public static void main(String[] args) {
+		
+		String 드라이버 = "org.mariadb.jdbc.Driver";
+		String 주소 = "jdbc:mariadb://localhost:3306/edu";
+		String 사용자 = "root";
+		String 비밀번호 = "1234";
+		new DbController(드라이버, 주소, 사용자, 비밀번호);
+	}
+	
+}
+
+package java0528;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class DbController {
+	// 전역변수(인스턴스변수)
+	private String 드라이버;
+	private String 주소;
+	private String 사용자;
+	private String 비밀번호;
+	
+	// 위 클래스를 재사용하기 위함
+	public DbController(String 드라이버, String 주소, String 사용자, String 비밀번호) {
+		this.드라이버 = 드라이버;
+		this.주소 = 주소;
+		this.사용자 = 사용자;
+		this.비밀번호 = 비밀번호;
+		시작(); // 생성자에서 바로 실행되도록 함(메인메서드에서는 이 시작() 메서드를 알 필요 없기 때문에 private선언) 
+	}
+	
+	private void 시작() {
+//		System.out.println("시작 + " + 드라이버);
+		try {
+			Class.forName(드라이버);
+			Connection conn = DriverManager.getConnection(주소, 사용자, 비밀번호);
+			기능제어(conn);
+			conn.close(); // 커넥션은 이곳에서만 닫아주면 됨
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void 기능제어(Connection conn) {
+		System.out.println("테이블 생성합니다.");
+		String sql = "create OR REPLACE table 명단 (";
+			   sql += "번호 int, ";
+			   sql += "이름 varchar(50), ";
+			   sql += "성별 varchar(10), ";
+			   sql += "특징 varchar(30), ";
+			   sql += "해적단 varchar(30), ";
+			   sql += "역할 varchar(20)";
+			   sql += ")";
+		if(테이블생성(sql, conn)) {
+			// DML >> CRUD
+			// 1단계 데이터 넣기(insert)
+			데이터생성();			
+		} else {
+			System.out.println("테이블 생성에 실패했습니다.");
+		}
+	}
+	
+	private void 데이터생성() {
+		DataDto data = new DataDto();
+		data.set번호(1);
+		data.set이름("몽키 D 루피");
+		data.set성별("남자");
+		data.set특징("고무고무 열매");
+		data.set해적단("밀짚모자");
+		data.set역할("선장");
+		
+		String sql = "insert into 명단 value(";
+	  		   sql += data.get번호();
+			   sql += ",'" + data.get이름() + "'"; // 문자열이로 만들어주기 위해 ""가 붙음
+			   sql += ",'" + data.get성별() + "'";
+			   sql += ",'" + data.get특징() + "'";
+			   sql += ",'" + data.get해적단() + "'";
+			   sql += ",'" + data.get역할() + "'";
+			   sql += ")";
+			   
+			   System.out.println(sql);
+	}
+	
+	private boolean 테이블생성(String sql, Connection conn) {
+		System.out.println(sql);
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql); // sql을 사용하도록 준비하는 것
+			ps.execute(); // 실행
+			ps.close();
+			return true; // 테이블생성에 대한 성공여부-성공
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false; // 테이블생성에 대한 성공여부-기본: 실패
+	}
+	
+	private void 데이터읽기(String sql, Connection conn) {
+		
+	}
+	
+	private void cud기능(String sql, Connection conn) { // 입력,수정,삭제 기능
+		
+	}
+}
+
+<출력>
+테이블 생성합니다.
+create OR REPLACE table 명단 (번호 int, 이름 varchar(50), 성별 varchar(10), 특징 varchar(30), 해적단 varchar(30), 역할 varchar(20))
+insert into 명단 value(1,'몽키 D 루피','남자','고무고무 열매','밀짚모자','선장')
+
+package java0528;
+// Dto : 자료형이 다양한 데이터를 묶을 수 있는 장점
+public class DataDto {
+	
+	private int 번호;
+	private String 이름;
+	private String 성별;
+	private String 특징;
+	private String 해적단;
+	private String 역할;
+	
+	public int get번호() {
+		return 번호;
+	}
+	public void set번호(int 번호) {
+		this.번호 = 번호;
+	}
+	public String get이름() {
+		return 이름;
+	}
+	public void set이름(String 이름) {
+		this.이름 = 이름;
+	}
+	public String get성별() {
+		return 성별;
+	}
+	public void set성별(String 성별) {
+		this.성별 = 성별;
+	}
+	public String get특징() {
+		return 특징;
+	}
+	public void set특징(String 특징) {
+		this.특징 = 특징;
+	}
+	public String get해적단() {
+		return 해적단;
+	}
+	public void set해적단(String 해적단) {
+		this.해적단 = 해적단;
+	}
+	public String get역할() {
+		return 역할;
+	}
+	public void set역할(String 역할) {
+		this.역할 = 역할;
+	}
+	
+	@Override
+	public String toString() {
+		return "DataDto [번호=" + 번호 + ", 이름=" + 이름 + ", 성별=" + 성별 + ", 특징=" + 특징 + ", 해적단=" + 해적단 + ", 역할=" + 역할 + "]";
+	}
+	
+}
+
+코드 변화 history (2)
+package java0528;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class DbController {
+	// 전역변수(인스턴스변수)
+	private String 드라이버;
+	private String 주소;
+	private String 사용자;
+	private String 비밀번호;
+	
+	// 위 클래스를 재사용하기 위함
+	public DbController(String 드라이버, String 주소, String 사용자, String 비밀번호) {
+		this.드라이버 = 드라이버;
+		this.주소 = 주소;
+		this.사용자 = 사용자;
+		this.비밀번호 = 비밀번호;
+		시작(); // 생성자에서 바로 실행되도록 함(메인메서드에서는 이 시작() 메서드를 알 필요 없기 때문에 private선언) 
+	}
+	
+	private void 시작() {
+//		System.out.println("시작 + " + 드라이버);
+		try {
+			Class.forName(드라이버);
+			Connection conn = DriverManager.getConnection(주소, 사용자, 비밀번호);
+			기능제어(conn);
+			conn.close(); // 커넥션은 이곳에서만 닫아주면 됨
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void 기능제어(Connection conn) {
+		System.out.println("테이블 생성합니다.");
+		String sql = "create OR REPLACE table 명단 (";
+			   sql += "번호 int, ";
+			   sql += "이름 varchar(50), ";
+			   sql += "성별 varchar(10), ";
+			   sql += "특징 varchar(30), ";
+			   sql += "해적단 varchar(30), ";
+			   sql += "역할 varchar(20)";
+			   sql += ")";
+		if(테이블생성(sql, conn)) {
+			// DML >> CRUD
+			// 1단계 데이터 넣기(insert)
+			// sql = 데이터생성(); 이것과
+			// cud기능(sql, conn); 이 두줄을 아래 한줄로 제어
+			cud기능(데이터생성(), conn);
+		} else {
+			System.out.println("테이블 생성에 실패했습니다.");
+		}
+	}
+	
+	private String 데이터생성() {
+		DataDto data = new DataDto();
+		data.set번호(1);
+		data.set이름("몽키 D 루피");
+		data.set성별("남자");
+		data.set특징("고무고무 열매");
+		data.set해적단("밀짚모자");
+		data.set역할("선장");
+		
+		String sql = "insert into 명단 value(";
+	  		   sql += data.get번호();
+			   sql += ",'" + data.get이름() + "'"; // 문자열이로 만들어주기 위해 "'"가 붙음
+			   sql += ",'" + data.get성별() + "'";
+			   sql += ",'" + data.get특징() + "'";
+			   sql += ",'" + data.get해적단() + "'";
+			   sql += ",'" + data.get역할() + "'";
+			   sql += ")";
+			   
+		System.out.println(sql);
+		return sql;
+	}
+	
+	private boolean 테이블생성(String sql, Connection conn) {
+		System.out.println(sql);
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql); // sql을 사용하도록 준비하는 것
+			ps.execute(); // 실행
+			ps.close();
+			return true; // 테이블생성에 대한 성공여부-성공
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false; // 테이블생성에 대한 성공여부-기본: 실패
+	}
+	
+	private void 데이터읽기(String sql, Connection conn) {
+		
+	}
+	
+	private void cud기능(String sql, Connection conn) { // 입력,수정,삭제 기능
+		System.out.println(sql);
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			int result = ps.executeUpdate();
+			System.out.println(result);
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+코드 변화 history (3)
+package java0528;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import java0527.TestDTO;
+
+public class DbController {
+	// 전역변수(인스턴스변수)
+	private String 드라이버;
+	private String 주소;
+	private String 사용자;
+	private String 비밀번호;
+	
+	// 위 클래스를 재사용하기 위함
+	public DbController(String 드라이버, String 주소, String 사용자, String 비밀번호) {
+		this.드라이버 = 드라이버;
+		this.주소 = 주소;
+		this.사용자 = 사용자;
+		this.비밀번호 = 비밀번호;
+		시작(); // 생성자에서 바로 실행되도록 함(메인메서드에서는 이 시작() 메서드를 알 필요 없기 때문에 private선언) 
+	}
+	
+	private void 시작() {
+//		System.out.println("시작 + " + 드라이버);
+		try {
+			Class.forName(드라이버);
+			Connection conn = DriverManager.getConnection(주소, 사용자, 비밀번호);
+			기능제어(conn);
+			conn.close(); // 커넥션은 이곳에서만 닫아주면 됨
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void 기능제어(Connection conn) {
+		System.out.println("테이블 생성합니다.");
+		String sql = "create OR REPLACE table 명단 (";
+			   sql += "번호 int, ";
+			   sql += "이름 varchar(50), ";
+			   sql += "성별 varchar(10), ";
+			   sql += "특징 varchar(30), ";
+			   sql += "해적단 varchar(30), ";
+			   sql += "역할 varchar(20)";
+			   sql += ")";
+		if(테이블생성(sql, conn)) {
+			// DML >> CRUD
+			// 1단계 데이터 넣기(insert)
+			// sql = 데이터생성(); 이것과
+			// cud기능(sql, conn); 이 두줄을 아래 한줄로 제어
+			cud기능(데이터생성(), conn);
+			
+			// 2단계 데이터 읽기(read)
+			데이터읽기("select * from 명단", conn); //sql문 바로 전달 가능
+			
+			// 3단계 수정
+			sql = "update 명단 set 역할 = '광대' where 번호 = 1";
+			cud기능(sql, conn);
+			데이터읽기("select * from 명단", conn); // 수정 확인
+			
+			// 4단계 삭제
+			sql = "delete from 명단 where 번호 = 1";
+			cud기능(sql, conn);
+			데이터읽기("select * from 명단", conn); // 삭제 확인
+		} else {
+			System.out.println("테이블 생성에 실패했습니다.");
+		}
+	}
+	
+	private String 데이터생성() {
+		DataDto data = new DataDto();
+		data.set번호(1);
+		data.set이름("몽키 D 루피");
+		data.set성별("남자");
+		data.set특징("고무고무 열매");
+		data.set해적단("밀짚모자");
+		data.set역할("선장");
+		
+		String sql = "insert into 명단 value(";
+	  		   sql += data.get번호();
+			   sql += ",'" + data.get이름() + "'"; // 문자열이로 만들어주기 위해 "'"가 붙음
+			   sql += ",'" + data.get성별() + "'";
+			   sql += ",'" + data.get특징() + "'";
+			   sql += ",'" + data.get해적단() + "'";
+			   sql += ",'" + data.get역할() + "'";
+			   sql += ")";
+			   
+		System.out.println(sql);
+		return sql;
+	}
+	
+	private boolean 테이블생성(String sql, Connection conn) {
+		System.out.println(sql);
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql); // sql을 사용하도록 준비하는 것
+			ps.execute(); // 실행
+			ps.close();
+			return true; // 테이블생성에 대한 성공여부-성공
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false; // 테이블생성에 대한 성공여부-기본: 실패
+	}
+	
+	private void 데이터읽기(String sql, Connection conn) {
+		System.out.println(sql);
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				DataDto data = new DataDto();
+				data.set번호(rs.getInt("번호")); // 바인딩/맵핑(1:1로 붙여줌) 
+				data.set이름(rs.getString("이름"));
+				data.set성별(rs.getString("성별"));
+				data.set특징(rs.getString("특징"));
+				data.set해적단(rs.getString("해적단"));
+				data.set역할(rs.getString("역할"));
+				System.out.println(data);
+			}
+			rs.close();
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
+	}
+	
+	private void cud기능(String sql, Connection conn) { // 입력,수정,삭제 기능
+		System.out.println(sql);
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			int result = ps.executeUpdate();
+			System.out.println(result);
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+# try-catch 문
+주로 외부 라이브러리를 사용할 때 예외처리를 해줘야하는데, 보통 in out이 발생할 때 예외처리하는 부분이 발생하기 때문에 자바에서 try-catch를 하라고 요청한다.
+
+
+# 위의 코드 최종 리팩토링 (강사님)
+package java0528;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DbController {
+	
+	private String 드라이버;
+	private String 주소;
+	private String 사용자;
+	private String 비밀번호;
+	
+	private String 테이블 = "create OR REPLACE table "
+			            + " 명단 ("
+						+ " 번호 		int,"
+						+ " 이름 		varchar(50),"
+						+ " 성별 		varchar(50),"
+						+ " 특징 		varchar(50),"
+						+ " 해적단 	varchar(50),"
+						+ " 역활		varchar(50)"
+						+ " )";
+	private String 입력 = "insert into 명단 value (?,?,?,?,?,?)";
+	private String 읽기 = "select * from 명단";
+	private String 수정 = "update 명단 set 역활 = ? where 번호 = ?";
+	private String 삭제 = "delete from 명단 where 번호 = ?";
+	
+	public DbController(String 드라이버, String 주소, String 사용자, String 비밀번호) {
+		this.드라이버 = 드라이버;
+		this.주소 = 주소;
+		this.사용자 = 사용자;
+		this.비밀번호 = 비밀번호;
+		시작();
+	}
+	
+	private void 시작() {
+		try {
+			Class.forName(드라이버);
+			Connection conn = DriverManager.getConnection(주소, 사용자, 비밀번호);
+			기능제어(conn);
+			conn.close();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void 기능제어(Connection conn) {
+		if(테이블생성(테이블, conn)) {
+			List<DataDto> list = 데이터생성();
+			for(int i = 0; i < list.size(); i++) {
+				System.out.println(list.get(i));
+				cud기능(입력, conn, (DataDto) list.get(i), "I"); 
+			}
+			데이터읽기(읽기, conn);
+			
+			DataDto data = new DataDto();
+			data.set번호(10);
+			data.set역활("광대");
+			cud기능(수정, conn, data, "U");
+			데이터읽기(읽기, conn);
+			
+			data = new DataDto();
+			data.set번호(10);
+			cud기능(삭제, conn, data, "D");
+			데이터읽기(읽기, conn);
+		} else {
+			System.out.println("테이블 생성 실패!!");
+		}
+	}
+	
+	private List 데이터생성() {
+		List list = new ArrayList<DataDto>();
+		
+		DataDto data = new DataDto();
+		data.set번호(1);
+		data.set이름("몽키 D 루피");
+		data.set성별("남자");
+		data.set특징("고무고무 열매");
+		data.set해적단("밀짚모자");
+		data.set역활("선장");
+		list.add(data);
+		
+		data = new DataDto();
+		data.set번호(2);
+		data.set이름("롤로노아 조로");
+		data.set성별("남자");
+		data.set특징("삼도류");
+		data.set해적단("밀짚모자");
+		data.set역활("부선장");
+		list.add(data);
+		
+		data = new DataDto();
+		data.set번호(3);
+		data.set이름("상디");
+		data.set성별("남자");
+		data.set특징("요리사");
+		data.set해적단("밀짚모자");
+		data.set역활("요리사");
+		list.add(data);
+		
+		data = new DataDto();
+		data.set번호(4);
+		data.set이름("나미");
+		data.set성별("여자");
+		data.set특징("항해사");
+		data.set해적단("밀짚모자");
+		data.set역활("항해사");
+		list.add(data);
+		
+		data = new DataDto();
+		data.set번호(5);
+		data.set이름("우솝");
+		data.set성별("남자");
+		data.set특징("사격");
+		data.set해적단("밀짚모자");
+		data.set역활("저격수");
+		list.add(data);
+		
+		data = new DataDto();
+		data.set번호(6);
+		data.set이름("토니토니 쵸파");
+		data.set성별("미정");
+		data.set특징("사람사람 열매");
+		data.set해적단("밀짚모자");
+		data.set역활("의사");
+		list.add(data);
+		
+		data = new DataDto();
+		data.set번호(7);
+		data.set이름("니코 로빈");
+		data.set성별("여자");
+		data.set특징("꽃꽃 열매");
+		data.set해적단("밀짚모자");
+		data.set역활("고고학자");
+		list.add(data);
+		
+		data = new DataDto();
+		data.set번호(8);
+		data.set이름("프랑키");
+		data.set성별("남자");
+		data.set특징("사이보그");
+		data.set해적단("밀짚모자");
+		data.set역활("조선공");
+		list.add(data);
+		
+		data = new DataDto();
+		data.set번호(9);
+		data.set이름("브록");
+		data.set성별("남자");
+		data.set특징("연주자");
+		data.set해적단("밀짚모자");
+		data.set역활("선원");
+		list.add(data);
+		
+		data = new DataDto();
+		data.set번호(10);
+		data.set이름("버기");
+		data.set성별("남자");
+		data.set특징("동강동강 열매");
+		data.set해적단("버기");
+		data.set역활("선장");
+		list.add(data);
+		
+		return list;
+	}
+	
+	private boolean 테이블생성(String sql, Connection conn) {
+		System.out.println(sql);
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.execute();
+			ps.close();
+			return true;  // << 성공
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;  // << 실패
+	}
+	
+	private void 데이터읽기(String sql, Connection conn) {
+		System.out.println(sql);
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				DataDto data = new DataDto();
+				data.set번호(rs.getInt("번호"));
+				data.set이름(rs.getString("이름"));
+				data.set성별(rs.getString("성별"));
+				data.set특징(rs.getString("특징"));
+				data.set해적단(rs.getString("해적단"));
+				data.set역활(rs.getString("역활"));
+				System.out.println(data);
+			}
+			rs.close();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void cud기능(String sql, Connection conn, DataDto data, String type) {
+		System.out.println(sql);
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			
+			if("I".equals(type)) {
+				ps.setInt(1, data.get번호());
+				ps.setString(2, data.get이름());
+				ps.setString(3, data.get성별());
+				ps.setString(4, data.get특징());
+				ps.setString(5, data.get해적단());
+				ps.setString(6, data.get역활());
+			} else if("U".equals(type)) {
+				ps.setString(1, data.get역활());
+				ps.setInt(2, data.get번호());
+			} else if("D".equals
