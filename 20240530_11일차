@@ -1,0 +1,792 @@
+2024.05.30 (목)
+# connection
+데이터베이스에 접속된 정보 (섹션)
+
+
+# 데이터타입 별 테이블 생성방법!
+- boolean 은 true와 false, 즉 0과 1 이기 때문에 1byte를 가짐
+
+# 스캐너를 이용한 데이터 받기 프로그램
+
+package java0530;
+
+public class App {
+	/****************************************************************
+	 * 연습 파일 !!
+	 ****************************************************************/
+	
+	/****************************************************************
+	 * 문제) AppController 클래스에 있는 5단계의 메소드 기능을 넣고 요청한 동작이 되도록 코드를 작성하시오.
+	 * 단, 각 단계에서 데이터를 제어하시오. (예시 : Scanner를 이용하여 데이터 입력방식도 가능)
+	 *
+	 * 1단계 : 테이블 정의서를 보고 생성하시오.
+	 *
+	 * 2단계 : 사용자 정보를 입력 받아 테이블에 추가하시오.
+	 *
+	 * 3단계 : 입력된 데이터를 전체 출력하시오.
+	 *
+	 * 4단계 : 수정할 데이터의 번호를 입력 받아 수정하시오.
+	 *
+	 * 5단계 : 삭제할 데이터의 번호를 입력 받아 삭제하시오.
+	 ***************************************************************/
+
+	// 현재 로컬에 설치 되어 있는 데이터베이스 접속 정보를 입력하세요.
+	private final static String URL = "jdbc:mariadb://localhost:3306/edu";
+	private final static String USER = "root";
+	private final static String PASSWORD = "1234";
+	/****************************************************************/
+
+	public static void main(String[] args) {
+		new AppController().시작(URL, USER, PASSWORD);
+	}
+
+}
+
+package java0530;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Scanner;
+
+public class AppController {
+	
+	private Scanner scan;
+	private String name;
+	private DBConnection db;
+	private String sql;
+	
+	public AppController() {
+		this.scan = new Scanner(System.in);
+		this.db = new DBConnection();
+	}
+
+	/****************************************************************/
+	// 1단계 테이블 생성하기
+	private void 테이블생성(Connection conn) {
+		sql = "create table 명단2 (번호 int, 이름 varchar(50), 성별 varchar(50), 특징 varchar(50), 해적단 varchar(50), 역할 varchar(50))"; // DDL 추가
+		System.out.println("테이블 생성 SQL문 확인 : " + sql);
+		// 코드추가를 확인 후 아래의 주석을 풀고 실행하세요.		
+		//db.테이블생성(conn, sql);
+	}
+	
+	// 2단계 생성된 테이블에 데이터 입력하기
+	private void 입력하기(Connection conn) {
+		sql = "insert into 명단2 value (?, ?, ?, ?, ?, ?)"; // DML 추가
+		System.out.println("SQL문 확인 : " + sql);
+		DbTable data = new DbTable();
+		/*****************************************
+		 *  Scanner 사용시 추가
+		*****************************************/
+		data.set번호(scan.nextInt());
+		scan.nextLine();
+		data.set이름(scan.nextLine());
+		data.set성별(scan.nextLine());
+		data.set특징(scan.nextLine());
+		data.set해적단(scan.nextLine());
+		data.set역할(scan.nextLine());
+		
+		System.out.println(data);
+		// 코드추가를 확인 후 아래의 주석을 풀고 실행하세요.
+		db.데이터입력하기(conn, sql, data);
+	}
+	
+	// 3단계 생성된 데이터 가져오기 >> 목록 출력 시 화면출력() 메소드를 사용하시오.
+	private void 가져오기(Connection conn) {
+		sql = "select * from 명단2"; // DML 추가
+		System.out.println("SQL문 확인 : " + sql);
+		화면출력(db.데이터가져오기(conn, sql));
+	}
+	
+	// 4단계 생성된 데이터 수정하기
+	private void 수정하기(Connection conn) {
+		sql = "update 명단2 set 역할 = ? where 번호 = ?"; // DML 추가
+		System.out.println("SQL문 확인 : " + sql);
+		DbTable data = new DbTable();
+		/*****************************************
+		 *  Scanner 사용시 추가
+		 *****************************************/
+		data.set역할(scan.nextLine());
+		data.set번호(scan.nextInt());
+		scan.nextLine();
+		
+		System.out.println(data);
+		// 코드추가를 확인 후 아래의 주석을 풀고 실행하세요.
+		db.데이터수정하기(conn, sql, data);
+	}
+	
+	// 5단계 생성된 데이터 삭제하기
+	private void 삭제하기(Connection conn) {
+		sql = "delete from 명단2 where 번호 = ?"; // DML 추가
+		System.out.println("SQL문 확인 : " + sql);
+		DbTable data = new DbTable();
+
+		/*****************************************
+		 *  Scanner 사용시 추가
+		 *****************************************/
+		data.set번호(scan.nextInt());
+		scan.nextLine();
+
+		System.out.println(data);
+		// 코드추가를 확인 후 아래의 주석을 풀고 실행하세요.
+		db.데이터삭제하기(conn, sql, data);
+	}
+	/****************************************************************/
+	
+	private void 사용자() {
+		System.out.println("당신은 누구인가요?");
+		this.name = scan.nextLine();
+		System.out.println(this.name + "님 환영합니다.");
+	}
+	
+	private void 종료() {
+		System.out.println(this.name + "님 다음에 또 찾아주세요.");
+		scan.close();
+	}
+	
+	private void 화면출력(List<DbTable> list) {
+		for(int i = 0; i < list.size(); i++) {
+			DbTable data = list.get(i);
+			System.out.println(data);
+		}
+	}
+	
+	private boolean 디비접속() {
+		boolean result = false;
+		boolean key = true;
+		System.out.println("데이터베이스에 연결하시겠습니까?(Y/N)");
+		while(key) {
+			switch (scan.nextLine()) {
+				case "Y":
+				case "y":
+					result = true;
+				case "N":
+				case "n":
+					key = false;
+					break;
+				default:
+					System.out.println("잘못 입력하셨습니다.");
+					break;
+			}
+		}
+		return result;
+	}
+	
+	public void 시작(String URL, String USER, String PASSWORD) {
+		사용자();
+		if(디비접속()) {
+			try {
+				Connection conn = db.openDB(URL, USER, PASSWORD);
+				if(conn != null) {
+					테이블생성(conn);					
+					boolean key = true;
+					while(key) {
+						System.out.println("어떤 기능을 실행하시겠습니까?(C입력/R읽기/U수정/D삭제/E종료");
+						switch (scan.nextLine()) {
+							case "C": 
+							case "c":
+								입력하기(conn);
+								break;
+							case "R": 
+							case "r":
+								가져오기(conn);
+								break;
+							case "U": 
+							case "u":
+								수정하기(conn);
+								break;
+							case "D": 
+							case "d":
+								삭제하기(conn);
+								break;
+							case "E": 
+							case "e":
+								key = false;
+								break;
+							default:
+								System.out.println("잘못된 입력입니다. 다시 기능을 입력해주세요.");
+						}
+					}
+					conn.close();
+					종료();
+				} else {
+					System.out.println("데이터 접속 정보를 확인해 주세요.");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			종료();
+		}
+	}
+
+}
+package java0530;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DBConnection {
+
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+
+	public Connection openDB(String URL, String USER, String PASSWORD) {
+		try {
+			Class.forName("org.mariadb.jdbc.Driver");
+			System.out.println("JDBC Connection Open!");
+			return DriverManager.getConnection(URL, USER, PASSWORD);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public boolean 테이블생성(Connection conn, String sql) {
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.execute();
+			pstmt.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public List<DbTable> 데이터가져오기(Connection conn, String sql) {
+		List<DbTable> list = new ArrayList<DbTable>();
+		DbTable data;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()){
+				data = new DbTable();
+
+				// 데이터를 매핑하시오.
+				data.set번호(rs.getInt("번호"));
+				data.set이름(rs.getString("이름"));
+				data.set성별(rs.getString("성별"));
+				data.set특징(rs.getString("특징"));
+				data.set해적단(rs.getString("해적단"));
+				data.set역할(rs.getString("역할"));
+				
+				list.add(data);
+			}
+			rs.close();
+			pstmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public boolean 데이터입력하기(Connection conn, String sql, DbTable data) {
+		try {
+			pstmt = conn.prepareStatement(sql);
+
+			// 데이터를 매핑하시오.
+			pstmt.setInt(1, data.get번호());
+			pstmt.setString(2, data.get이름());
+			pstmt.setString(3, data.get성별());
+			pstmt.setString(4, data.get특징());
+			pstmt.setString(5, data.get해적단());
+			pstmt.setString(6, data.get역할());
+			
+			int state = pstmt.executeUpdate();
+			pstmt.close();
+			conn.commit();
+			if(state == 1) return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean 데이터수정하기(Connection conn, String sql, DbTable data) {
+		try {
+			pstmt = conn.prepareStatement(sql);
+
+			// 데이터를 매핑하시오.
+			pstmt.setString(1, data.get역할());
+			pstmt.setInt(2, data.get번호());
+
+			int state = pstmt.executeUpdate();
+			pstmt.close();
+			conn.commit();
+			if(state == 1) return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+
+	}
+
+	public boolean 데이터삭제하기(Connection conn, String sql, DbTable data) {
+		try {
+			pstmt = conn.prepareStatement(sql);
+
+			// 데이터를 매핑하시오.
+			pstmt.setInt(1, data.get번호());
+
+			int state = pstmt.executeUpdate();
+			pstmt.close();
+			conn.commit();
+			if(state == 1) return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+
+	}
+
+}
+
+package java0530;
+
+public class DbTable {
+
+	// 테이블 정의서를 보고 필드(변수)를 선언하시오.
+	int 번호;
+	String 이름;
+	String 성별;
+	String 특징;
+	String 해적단;
+	String 역할;
+	
+	public int get번호() {
+		return 번호;
+	}
+	public void set번호(int 번호) {
+		this.번호 = 번호;
+	}
+	public String get이름() {
+		return 이름;
+	}
+	public void set이름(String 이름) {
+		this.이름 = 이름;
+	}
+	public String get성별() {
+		return 성별;
+	}
+	public void set성별(String 성별) {
+		this.성별 = 성별;
+	}
+	public String get특징() {
+		return 특징;
+	}
+	public void set특징(String 특징) {
+		this.특징 = 특징;
+	}
+	public String get해적단() {
+		return 해적단;
+	}
+	public void set해적단(String 해적단) {
+		this.해적단 = 해적단;
+	}
+	public String get역할() {
+		return 역할;
+	}
+	public void set역할(String 역할) {
+		this.역할 = 역할;
+	}
+	
+	@Override
+	public String toString() {
+		return "DbTable [번호=" + 번호 + ", 이름=" + 이름 + ", 성별=" + 성별 + ", 특징=" + 특징 + ", 해적단=" + 해적단 + ", 역할=" + 역할 + "]";
+	}
+	
+}
+
+
+# 데이터타입 다른 것
+package java0530_2;
+
+public class App {
+
+	/****************************************************************
+	 * 문제) AppController 클래스에 있는 5단계의 메소드 기능을 넣고 요청한 동작이 되도록 코드를 작성하시오.
+	 * 단, 각 단계에서 데이터를 제어하시오. (예시 : Scanner를 이용하여 데이터 입력방식도 가능)
+	 *
+	 * 1단계 : 테이블 정의서를 보고 생성하시오.
+	 *
+	 * 2단계 : 사용자 정보를 입력 받아 테이블에 추가하시오.
+	 *
+	 * 3단계 : 입력된 데이터를 전체 출력하시오.
+	 *
+	 * 4단계 : 수정할 데이터의 번호를 입력 받아 수정하시오.
+	 *
+	 * 5단계 : 삭제할 데이터의 번호를 입력 받아 삭제하시오.
+	 ***************************************************************/
+
+	// 현재 로컬에 설치 되어 있는 데이터베이스 접속 정보를 입력하세요.
+	private final static String URL = "jdbc:mariadb://localhost:3306/edu";
+	private final static String USER = "root";
+	private final static String PASSWORD = "1234";
+	/****************************************************************/
+
+	public static void main(String[] args) {
+		new AppController().시작(URL, USER, PASSWORD);
+	}
+
+}
+
+package java0530_2;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Scanner;
+
+public class AppController {
+	
+	private Scanner scan;
+	private String name;
+	private DBConnection db;
+	private String sql;
+	
+	public AppController() {
+		this.scan = new Scanner(System.in);
+		this.db = new DBConnection();
+	}
+
+	/****************************************************************/
+	// 1단계 테이블 생성하기
+	private void 테이블생성(Connection conn) {
+		sql = "create table 명단3 (no int, email varchar(50), password varchar(50), delYn boolean)"; // DDL 추가
+		System.out.println("테이블 생성 SQL문 확인 : " + sql);
+		// 코드추가를 확인 후 아래의 주석을 풀고 실행하세요.		
+		//db.테이블생성(conn, sql);
+	}
+	
+	// 2단계 생성된 테이블에 데이터 입력하기
+	private void 입력하기(Connection conn) {
+		sql = "insert into 명단3 value (?, ?, ?, ?)"; // DML 추가
+		System.out.println("SQL문 확인 : " + sql);
+		DbTable data = new DbTable();
+		/*****************************************
+		 *  Scanner 사용시 추가
+		 *****************************************/
+		data.setNo(scan.nextInt());
+		scan.nextLine();
+		data.setEmail(scan.nextLine());
+		data.setPassword(scan.nextLine());
+		data.setDelYn(scan.nextBoolean());
+		scan.nextLine();
+		
+		System.out.println(data);
+		// 코드추가를 확인 후 아래의 주석을 풀고 실행하세요.
+		db.데이터입력하기(conn, sql, data);
+	}
+	
+	// 3단계 생성된 데이터 가져오기 >> 목록 출력 시 화면출력() 메소드를 사용하시오.
+	private void 가져오기(Connection conn) {
+		sql = "select * from 명단3"; // DML 추가
+		System.out.println("SQL문 확인 : " + sql);
+		화면출력(db.데이터가져오기(conn, sql));
+	}
+	
+	// 4단계 생성된 데이터 수정하기
+	private void 수정하기(Connection conn) {
+		sql = "update 명단3 set email = ?, password = ?, delYn = ? where no = ?"; // DML 추가
+		System.out.println("SQL문 확인 : " + sql);
+		DbTable data = new DbTable();
+		/*****************************************
+		 *  Scanner 사용시 추가
+		 *****************************************/
+		data.setEmail(scan.nextLine());
+		data.setPassword(scan.nextLine());
+		data.setDelYn(scan.nextBoolean());
+		scan.nextLine();
+		data.setNo(scan.nextInt());
+		scan.nextLine();
+		
+		System.out.println(data);
+		// 코드추가를 확인 후 아래의 주석을 풀고 실행하세요.
+		db.데이터수정하기(conn, sql, data);
+	}
+	
+	// 5단계 생성된 데이터 삭제하기
+	private void 삭제하기(Connection conn) {
+		sql = "update 명단3 set delYn = ? where no = ?"; // DML 추가
+		System.out.println("SQL문 확인 : " + sql);
+		DbTable data = new DbTable();
+
+		/*****************************************
+		 *  Scanner 사용시 추가
+		 *****************************************/
+		data.setDelYn(scan.nextBoolean());
+		scan.nextLine();
+		data.setNo(scan.nextInt());
+		scan.nextLine();
+		
+		System.out.println(data);
+		// 코드추가를 확인 후 아래의 주석을 풀고 실행하세요.
+		db.데이터삭제하기(conn, sql, data);
+	}
+	/****************************************************************/
+	
+	private void 사용자() {
+		System.out.println("당신은 누구인가요?");
+		this.name = scan.nextLine();
+		System.out.println(this.name + "님 환영합니다.");
+	}
+	
+	private void 종료() {
+		System.out.println(this.name + "님 다음에 또 찾아주세요.");
+		scan.close();
+	}
+	
+	private void 화면출력(List<DbTable> list) {
+		for(int i = 0; i < list.size(); i++) {
+			DbTable data = list.get(i);
+			System.out.println(data);
+		}
+	}
+	
+	private boolean 디비접속() {
+		boolean result = false;
+		boolean key = true;
+		System.out.println("데이터베이스에 연결하시겠습니까?(Y/N)");
+		while(key) {
+			switch (scan.nextLine()) {
+				case "Y":
+				case "y":
+					result = true;
+				case "N":
+				case "n":
+					key = false;
+					break;
+				default:
+					System.out.println("잘못 입력하셨습니다.");
+					break;
+			}
+		}
+		return result;
+	}
+	
+	public void 시작(String URL, String USER, String PASSWORD) {
+		사용자();
+		if(디비접속()) {
+			try {
+				Connection conn = db.openDB(URL, USER, PASSWORD);
+				if(conn != null) {
+					테이블생성(conn);					
+					boolean key = true;
+					while(key) {
+						System.out.println("어떤 기능을 실행하시겠습니까?(C입력/R읽기/U수정/D삭제/E종료");
+						switch (scan.nextLine()) {
+							case "C": 
+							case "c":
+								입력하기(conn);
+								break;
+							case "R": 
+							case "r":
+								가져오기(conn);
+								break;
+							case "U": 
+							case "u":
+								수정하기(conn);
+								break;
+							case "D": 
+							case "d":
+								삭제하기(conn);
+								break;
+							case "E": 
+							case "e":
+								key = false;
+								break;
+							default:
+								System.out.println("잘못된 입력입니다. 다시 기능을 입력해주세요.");
+						}
+					}
+					conn.close();
+					종료();
+				} else {
+					System.out.println("데이터 접속 정보를 확인해 주세요.");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			종료();
+		}
+	}
+
+}
+package java0530_2;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DBConnection {
+
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+
+	public Connection openDB(String URL, String USER, String PASSWORD) {
+		try {
+			Class.forName("org.mariadb.jdbc.Driver");
+			System.out.println("JDBC Connection Open!");
+			return DriverManager.getConnection(URL, USER, PASSWORD);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public boolean 테이블생성(Connection conn, String sql) {
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.execute();
+			pstmt.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public List<DbTable> 데이터가져오기(Connection conn, String sql) {
+		List<DbTable> list = new ArrayList<DbTable>();
+		DbTable data;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()){
+				data = new DbTable();
+
+				// 데이터를 매핑하시오.
+				data.setNo(rs.getInt("no"));
+				data.setEmail(rs.getString("email"));
+				data.setPassword(rs.getString("password"));
+				data.setDelYn(rs.getBoolean("delYn"));
+
+				list.add(data);
+			}
+			rs.close();
+			pstmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public boolean 데이터입력하기(Connection conn, String sql, DbTable data) {
+		try {
+			pstmt = conn.prepareStatement(sql);
+
+			// 데이터를 매핑하시오.
+			pstmt.setInt(1, data.getNo());
+			pstmt.setString(2, data.getEmail());
+			pstmt.setString(3, data.getPassword());
+			pstmt.setBoolean(4, data.isDelYn());
+
+			int state = pstmt.executeUpdate();
+			pstmt.close();
+			conn.commit();
+			if(state == 1) return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean 데이터수정하기(Connection conn, String sql, DbTable data) {
+		try {
+			pstmt = conn.prepareStatement(sql);
+
+			// 데이터를 매핑하시오.
+			pstmt.setString(1, data.getEmail());
+			pstmt.setString(2, data.getPassword());
+			pstmt.setBoolean(3, data.isDelYn());
+			pstmt.setInt(4, data.getNo());
+			
+			int state = pstmt.executeUpdate();
+			pstmt.close();
+			conn.commit();
+			if(state == 1) return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+
+	}
+
+	public boolean 데이터삭제하기(Connection conn, String sql, DbTable data) {
+		try {
+			pstmt = conn.prepareStatement(sql);
+
+			// 데이터를 매핑하시오.
+			pstmt.setBoolean(1, data.isDelYn());
+			pstmt.setInt(2, data.getNo());
+
+			int state = pstmt.executeUpdate();
+			pstmt.close();
+			conn.commit();
+			if(state == 1) return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+
+	}
+
+}
+
+package java0530_2;
+
+public class DbTable {
+
+	// 테이블 정의서를 보고 필드(변수)를 선언하시오.
+	int no;
+	String email;
+	String password;
+	boolean delYn;
+	
+	public int getNo() {
+		return no;
+	}
+	public void setNo(int no) {
+		this.no = no;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public boolean isDelYn() {
+		return delYn;
+	}
+	public void setDelYn(boolean delYn) {
+		this.delYn = delYn;
+	}
+	
+	@Override
+	public String toString() {
+		return "DbTable [no=" + no + ", email=" + email + ", password=" + password + ", delYn=" + delYn + "]";
+	}
+		
+}
+
