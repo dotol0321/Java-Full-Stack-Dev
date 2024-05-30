@@ -406,7 +406,8 @@ public class DbTable {
 }
 
 
-# 데이터타입 다른 것
+# 스캐너를 이용한 데이터 받기 프로그램 - 데이터타입 (boolean 추가된 내용)
+
 package java0530_2;
 
 public class App {
