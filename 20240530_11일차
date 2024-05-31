@@ -4,7 +4,7 @@
 
 
 # 데이터타입 별 테이블 생성방법!
-- boolean 은 true와 false, 즉 0과 1 이기 때문에 1byte를 가짐
+- boolean 은 true와 false, 즉 1과 0 이기 때문에 1byte를 가짐 (쿼리에서 데이터길이를 지정 X)
 
 # 스캐너를 이용한 데이터 받기 프로그램
 
