@@ -1,0 +1,166 @@
+2024.06.04 (화)
+
+웹 기능 정의서 만들기
+디자인 및 웹, 앱 참고
+1. 비핸스 출처: behance.net. ...
+핀터레스트 출처: pinterest.co.kr. ...
+노트폴리오 출처: notefolio.net. ...
+드리블 출처: dribbble.com. ...
+라우드소싱 출처: loud.kr.
+
+
+# VSCode
+- http://localhost/WebService/
+=> HTDOCS > WebService 폴더를 만들고 이 안에 html파일을 만들면 html 파일의 목록이 나타남
+=> 하지만 HTDOCS > WebService 폴더 안에 index.html 파일을 만드는 순간 위 목록이 사라짐
+사진 설명을 입력하세요.
+- localhost/ : 루트 패스
+
+# 페이지 경로 찾아가기
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- 화면 비율-->
+    <title>Test</title>
+</head>
+<body>
+    <a href="page1.html">Page1</a>
+    <a href="temp/page2.html">Page2</a>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page1</title>
+</head>
+<body>
+    <a href="test.html">Test</a>
+    <a href="temp/page2.html">Page2</a>    
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page2</title>
+</head>
+<body>
+    <a href="../test.html">Test</a>
+    <a href="/WebService/page1.html">Page1</a>
+</body>
+</html>
+../ : 상대경로
+/폴더 : 절대경로
+
+# 스타일 css
+- 태그에 스타일 속성을 직접 넣는 것이 우선순위가 높음
+- 하지만 !important를 넣으면 우선순위가 더 높아짐(강제 코드)
+
+# web service architecture
+Web Server > WAS > DB > WAS > Web Server
+-html -webapps -jdbc
+-css
+
+# WAS
+- 웹 어플리케이션 서버
+- 동적으로 데이터를 전환시켜주기 위함
+
+# 콘솔창 한글 깨짐 해결
+Run > Run Configurations.. > Common 탭 > Encoding : MS949 직접입력
+
+# 서블릿 프로젝트 만드는 방법
+* dynamic web project 만들기 > 체크박스 체크!
+
+# 구조
+java resources : 자바파일
+webContent > WEB-INF : html 파일
+
+# WebServlet 프로젝트
+http://localhost:8080/WebServlet/
+
+# 서버 구동 뒤 브라우저 띄우기
+ctrl + F11
+
+# 기본 출력 (콘솔 & 브라우저)
+사진 설명을 입력하세요.
+
+# 서블릿 만들기
+
+Page1.java
+import java.io.IOException;
+import java.io.PrintStream;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class Page1 extends HttpServlet {
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		System.out.println("안녕하세요.");
+		ServletOutputStream sos = resp.getOutputStream();
+		PrintStream ps = new PrintStream(sos, true); //매번 호출할 때마다 출력
+		ps.print("안녕!");
+	}
+	
+}
+
+Page3.java
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/page3")
+public class Page3 extends HttpServlet {
+		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
+
+}
+
+web.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  <display-name>WebServlet</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <servlet>
+  	<servlet-name>Page1</servlet-name>
+  	<servlet-class>Page1</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>Page1</servlet-name>
+  	<url-pattern>/page1</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>Page2</servlet-name>
+  	<servlet-class>Page2</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>Page2</servlet-name>
+  	<url-pattern>/page2</url-pattern>
+  </servlet-mapping>
+  
+</web-app>
+#
