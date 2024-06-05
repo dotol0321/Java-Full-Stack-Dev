@@ -441,4 +441,52 @@ public class Result extends HttpServlet {
 	
 }
 
+================================================================================================================================================
+
+# 강화훈련
+package java0605;
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+public class Study04 {
+	
+	public static void main(String[] args) {
+	
+		List<Map> list = new ArrayList<Map>();
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("no", 1);
+		map.put("name", "홍길동");
+		list.add(map);
+		
+		map = new HashMap<String, Object>();
+		map.put("no", 2);
+		map.put("name", "유관순");
+		list.add(map);
+		
+		for(int i=0; i<list.size(); i++) {
+			Map m = list.get(i);
+			Iterator it = m.keySet().iterator();
+			
+			while(it.hasNext()) {
+				System.out.println(m.get(it.next())); // 아래의 출력문 처럼 일일히 출력하지 않아도 while문을 통해 키 값을 출력할 수 있음
+			}
+			
+//			System.out.println(m.get("no"));
+//			System.out.println(m.get("name"));
+		}
+	}
+	
+}
+
+출력
+1
+홍길동
+2
+유관순
+
 
