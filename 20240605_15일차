@@ -1,5 +1,11 @@
 2024.06.05 (수)
 
+# Docker
+- 도커 계정 : 구글 계정으로 연동해야 문제가 적어지다함.
+- 도커 로그인 후 > cmd > maria db 위치로 설정 (maria db가 바탕화면에 있으면 cd C:\Users\hi\Desktop\mariadb 입력) > docker-compose up 입력 하면 도커에 db가 설치됨
+- 도커에서 실행(start) 버튼 클릭하면 db에 연결됨 (도커에서 연결을 켜고 끌 수 있음) - 포트번호 확인!
+- heidiSQL에서 세션 연결되면 끝
+
 # name
 화면에 받을 수 있는 값이 담겨 있는 키
 
@@ -11,8 +17,10 @@ ex) Result?cnt=0&txt=%EC%95%88%EB%85%95
 # Post 방식
 - 주소창에 파라미터를 노출시키지 않고 Form data에 전달하여 body에 담아 전달하는 방식
 
-#
-- form action과 webServlet의 패스가 같아야함
+# form action과 webServlet의 패스가 같아야함
+
+
+[Form.jsp]
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -42,8 +50,12 @@ ex) Result?cnt=0&txt=%EC%95%88%EB%85%95
 </div>
 </body>
 </html>
+
 - submit 을 클릭하면 action이라는 이벤트가 발생함
 
+================================================================================================================================================
+
+[result.jsp]
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -68,6 +80,7 @@ public class Result extends HttpServlet {
 
 }
 
+================================================================================================================================================
 # Get 방식
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -98,6 +111,7 @@ public class Result extends HttpServlet {
 </body>
 </html>
 
+================================================================================================================================================
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -133,6 +147,8 @@ public class Result extends HttpServlet {
 
 }
 
+================================================================================================================================================
+
 # Post 방식
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -163,6 +179,7 @@ public class Result extends HttpServlet {
 </body>
 </html>
 
+================================================================================================================================================
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -208,12 +225,17 @@ public class Result extends HttpServlet {
 
 }
 
+================================================================================================================================================
+
 # 문자 바이트
 - 영문 : 2바이트
 - 한글 : 4바이트
 
 # 반복되는 코드
 1. 메소드를 사용하여 기능으로 분리하는 방법 ( 클래스 내에서만 사용 가능)
+
+================================================================================================================================================
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -251,7 +273,10 @@ public class Result extends HttpServlet {
 
 }
 
+================================================================================================================================================
+
 2. 클래스로 분리하여 메모리에 올려두고 사용 (static 처리)
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -311,7 +336,9 @@ public class Result extends HttpServlet {
 - 가로채는 행위에는 보통 한글 깨짐 처리 등의 공통적으로 실행해야 될 부분을 처리해줄 수 있음.
 - web.xml 에 등록을 해주어야 공통으로 사용 가능
 
-web.xml
+
+[web.xml]
+
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
   <display-name>WebServlet</display-name>
@@ -347,7 +374,9 @@ web.xml
 </web-app>
 
 
+
 # 필터를 이용한 한글처리
+
 import java.io.IOException;
 
 import javax.servlet.Filter;
