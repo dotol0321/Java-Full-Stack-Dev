@@ -114,6 +114,7 @@ public class Result extends HttpServlet {
 		req.setCharacterEncoding("UTF-8"); // 한글깨짐 방지(필터처리가 없어서 직접 넣어줘야함)
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("text/html; charset=utf-8");
+		// form.html 파일의 cnt input type은 number인데, String 변수로 받고 있기 때문에 아래 반복문에서 형변환 함
 		String cnt = req.getParameter("cnt");
 		String txt = req.getParameter("txt");
 		System.out.println(cnt + "," + txt);
@@ -139,7 +140,7 @@ public class Result extends HttpServlet {
 		+ "	<ol class=\"list-group list-group-numbered\">\n";
 		
 		// 반복문 적용 하는 곳
-		int c = Integer.parseInt(cnt); // 형변환 (자료형 변경)
+		int c = Integer.parseInt(cnt); // 형변환 (조건문과 반복문에서 숫자와 비교하기 위해 숫자형으로 자료형 변경해줌)
 		if(c == 0) {
 			html += "<li class=\"list-group-item\">입력 받은 값이 없습니다</li>\n";
 		} else {
@@ -154,11 +155,13 @@ public class Result extends HttpServlet {
 		+ "</body>\n"
 		+ "</html>";
 		
-		System.out.println(html); // 위 html 코드가 정상적으로 입력되었는지 확인하는 코드
+		System.out.println(html); // 위 html 코드가 정상적으로 입력되었는지 확인하는 코드		
 		resp.getWriter().append(html); // 화면에 출력
+		
 	}
 
 }
+
 
 
 ========================================================================================================================
